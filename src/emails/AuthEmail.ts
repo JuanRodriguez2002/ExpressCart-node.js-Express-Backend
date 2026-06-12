@@ -1,0 +1,290 @@
+import { transport } from "../config/nodemailer";
+import path from "path";
+
+type EmailType = {
+  name: string;
+  email: string;
+  token: string;
+};
+
+export class AuthEmail {
+  static sendConfirmationEmail = async (data: EmailType) => {
+    const logoPath = path.join(__dirname, "../assets/logo_conF.png");
+    const email = await transport.sendMail({
+      from: '"ExpressCart" <no-reply@expresscart.com>',
+      to: data.email,
+      subject: "ExpressCart - Confirma tu cuenta",
+      text: `Hola ${data.name}, confirma tu cuenta en ExpressCart utilizando el siguiente código: ${data.token}`,
+      html: `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fbf9; padding: 40px 10px; margin: 0;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 550px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 75, 50, 0.05); overflow: hidden; border: 1px solid #eef2f0;">
+                        
+                        <tr>
+                            <td align="center" style="padding: 30px 20px; background-color: #004B32;">
+                                <img src="cid:expresscart-logo" alt="ExpressCart Logo" width="160" style="display: block; border: 0; outline: none; text-decoration: none; border-radius: 8px;">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 40px 30px;">
+                                <h1 style="color: #1A3026; font-size: 24px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">
+                                    ¡Hola, ${data.name}!
+                                </h1>
+                                <p style="color: #4A5A51; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0; text-align: center;">
+                                    Gracias por unirte a <strong>ExpressCart</strong>. Para completar tu registro y asegurar tu cuenta, introduce el siguiente código de verificación en la aplicación:
+                                </p>
+
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 30px auto;">
+                                    <tr>
+                                        <td align="center" style="background-color: #F0F7F4; border: 2px dashed #004B32; border-radius: 12px; padding: 18px 40px;">
+                                            <span style="font-size: 32px; font-weight: 800; color: #004B32; letter-spacing: 6px; display: block; font-family: monospace;">
+                                                ${data.token}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <p style="color: #7A8B81; font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
+                                    Este código expira pronto y puede ser utilizado una sola vez. Si tú no creaste esta cuenta, puedes ignorar este correo con total seguridad.
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 20px 30px; background-color: #F8FAF9; border-top: 1px solid #eef2f0; text-align: center;">
+                                <p style="color: #9AABA1; font-size: 12px; margin: 0 0 5px 0;">
+                                    © 2026 ExpressCart. Todos los derechos reservados.
+                                </p>
+                                <p style="color: #9AABA1; font-size: 12px; margin: 0;">
+                                    Este es un correo automático, por favor no respondas a este mensaje.
+                                </p>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            `,
+      // DEFINICIÓN DEL ARCHIVO INCRUSTADO
+      attachments: [
+        {
+          filename: "logo.png",
+          path: logoPath,
+          cid: "expresscart-logo", // Este nombre debe coincidir exactamente con el src="cid:..." de arriba
+        },
+      ],
+    });
+  };
+
+  static sendForgotPasswordEmail = async (user: EmailType) => {
+    // Apuntamos al mismo archivo físico de tu logo
+    const logoPath = path.join(__dirname, "../assets/logo_conF.png");
+
+    const email = await transport.sendMail({
+      from: '"ExpressCart" <no-reply@expresscart.com>', // Unificado con el remitente de arriba
+      to: user.email,
+      subject: "ExpressCart - Restablece tu contraseña",
+      text: `Hola ${user.name}, has solicitado restablecer tu contraseña. Utiliza el siguiente código para continuar: ${user.token}`,
+      html: `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fbf9; padding: 40px 10px; margin: 0;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 550px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 75, 50, 0.05); overflow: hidden; border: 1px solid #eef2f0;">
+                        
+                        <tr>
+                            <td align="center" style="padding: 30px 20px; background-color: #004B32;">
+                                <img src="cid:expresscart-logo" alt="ExpressCart Logo" width="160" style="display: block; border: 0; outline: none; text-decoration: none; border-radius: 8px;">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 40px 30px;">
+                                <h1 style="color: #1A3026; font-size: 24px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">
+                                    Restablecer Contraseña
+                                </h1>
+                                <p style="color: #4A5A51; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0; text-align: center;">
+                                    Hola <strong>${user.name}</strong>, recibimos una solicitud para cambiar la contraseña de tu cuenta ExpressCart. Introduce este código de verificación en la aplicación para proceder con el cambio:
+                                </p>
+
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 30px auto;">
+                                    <tr>
+                                        <td align="center" style="background-color: #FFF9F3; border: 2px dashed #D97706; border-radius: 12px; padding: 18px 40px;">
+                                            <span style="font-size: 32px; font-weight: 800; color: #D97706; letter-spacing: 6px; display: block; font-family: monospace;">
+                                                ${user.token}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <p style="color: #7A8B81; font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
+                                    Si tú no solicitaste este cambio, puedes ignorar este correo de manera segura. Tu contraseña actual seguirá activa sin modificaciones.
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding: 20px 30px; background-color: #F8FAF9; border-top: 1px solid #eef2f0; text-align: center;">
+                                <p style="color: #9AABA1; font-size: 12px; margin: 0 0 5px 0;">
+                                    © 2026 ExpressCart. Todos los derechos reservados.
+                                </p>
+                                <p style="color: #9AABA1; font-size: 12px; margin: 0;">
+                                    Este es un correo automático, por favor no respondas a este mensaje.
+                                </p>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            `,
+      attachments: [
+        {
+          filename: "logo.png",
+          path: logoPath,
+          cid: "expresscart-logo",
+        },
+      ],
+    });
+
+    console.log("message sent: %s", email.messageId);
+  };
+
+  static sendSupermarketConfirmationEmail = async (data: EmailType) => {
+    // Apuntamos al archivo físico de tu logotipo corporativo
+    const logoPath = path.join(__dirname, "../assets/logo_conF.png");
+
+    const email = await transport.sendMail({
+      from: '"ExpressCart Business" <no-reply@expresscart.com>',
+      to: data.email,
+      subject: "ExpressCart Business - Activa tu cuenta de Supermercado",
+      text: `Estimado aliado de ${data.name}, active su cuenta comercial en ExpressCart utilizando el siguiente código: ${data.token}`,
+      html: `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f5; padding: 40px 10px; margin: 0;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 550px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 75, 50, 0.05); overflow: hidden; border: 1px solid #e2e8e4;">
+                    
+                    <tr>
+                        <td align="center" style="padding: 30px 20px; background-color: #004B32;">
+                            <img src="cid:expresscart-logo" alt="ExpressCart Business" width="160" style="display: block; border: 0; outline: none; text-decoration: none; border-radius: 8px;">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <h1 style="color: #1A3026; font-size: 22px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">
+                                ¡Bienvenido a ExpressCart Business!
+                            </h1>
+                            <p style="color: #4A5A51; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; text-align: justify;">
+                                Estimado administrador de <strong>${data.name}</strong>, le damos la bienvenida a nuestra red de aliados comerciales. Su cuenta como administrador de supermercado ha sido creada con éxito. 
+                            </p>
+                            <p style="color: #4A5A51; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0; text-align: justify;">
+                                Para validar el acceso al panel de control, configurar su establecimiento e iniciar la carga de su catálogo de productos, introduzca el siguiente token de verificación en la aplicación:
+                            </p>
+
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 30px auto;">
+                                <tr>
+                                    <td align="center" style="background-color: #E6F3ED; border: 2px solid #004B32; border-radius: 12px; padding: 18px 45px;">
+                                        <span style="font-size: 32px; font-weight: 800; color: #004B32; letter-spacing: 6px; display: block; font-family: monospace;">
+                                            ${data.token}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="color: #7A8B81; font-size: 13px; line-height: 1.5; margin: 0; text-align: center;">
+                                Este código de seguridad corporativo es de uso único. Si su empresa no solicitó esta afiliación, póngase en contacto inmediato con nuestro equipo de soporte técnico.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 20px 30px; background-color: #F0F4F2; border-top: 1px solid #e2e8e4; text-align: center;">
+                            <p style="color: #8A9B91; font-size: 12px; margin: 0 0 5px 0;">
+                                © 2026 ExpressCart Business. Módulo de Gestión de Sucursales.
+                            </p>
+                            <p style="color: #9AABA1; font-size: 11px; margin: 0;">
+                                Mensaje automático del sistema de credenciales. Por favor no responder.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        `,
+      attachments: [
+        {
+          filename: "logo.png",
+          path: logoPath,
+          cid: "expresscart-logo",
+        },
+      ],
+    });
+
+    console.log("Supermarket confirmation email sent: %s", email.messageId);
+  };
+
+  static sendSupermarketForgotPasswordEmail = async (user: EmailType) => {
+    const logoPath = path.join(__dirname, "../assets/logo_conF.png");
+
+    const email = await transport.sendMail({
+      from: '"ExpressCart Business" <no-reply@expresscart.com>',
+      to: user.email,
+      subject:
+        "ExpressCart Business - Reestablecimiento de credenciales de acceso",
+      text: `Estimado usuario de ${user.name}, utilice el siguiente código de seguridad para reestablecer sus credenciales: ${user.token}`,
+      html: `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f5; padding: 40px 10px; margin: 0;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 550px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 75, 50, 0.05); overflow: hidden; border: 1px solid #e2e8e4;">
+                    
+                    <tr>
+                        <td align="center" style="padding: 30px 20px; background-color: #004B32;">
+                            <img src="cid:expresscart-logo" alt="ExpressCart Business" width="160" style="display: block; border: 0; outline: none; text-decoration: none; border-radius: 8px;">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <h1 style="color: #1A3026; font-size: 22px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">
+                                Restablecimiento de Credenciales
+                            </h1>
+                            <p style="color: #4A5A51; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; text-align: justify;">
+                                Estimado administrador de <strong>${user.name}</strong>, hemos registrado una solicitud formal para modificar la contraseña de acceso asociada a este perfil en nuestra plataforma de comercios.
+                            </p>
+                            <p style="color: #4A5A51; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0; text-align: justify;">
+                                Ingrese el siguiente código de autorización en el formulario de la aplicación móvil de gestión para proceder con la asignación de su nueva clave:
+                            </p>
+
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 30px auto;">
+                                <tr>
+                                    <td align="center" style="background-color: #FFF5EC; border: 2px dashed #D97706; border-radius: 12px; padding: 18px 45px;">
+                                        <span style="font-size: 32px; font-weight: 800; color: #D97706; letter-spacing: 6px; display: block; font-family: monospace;">
+                                            ${user.token}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="color: #7A8B81; font-size: 13px; line-height: 1.5; margin: 0; text-align: center;">
+                                Si usted no inició esta solicitud, ignore este correo. Las credenciales actuales de su negocio permanecerán protegidas y sin cambios de seguridad.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 20px 30px; background-color: #F0F4F2; border-top: 1px solid #e2e8e4; text-align: center;">
+                            <p style="color: #8A9B91; font-size: 12px; margin: 0 0 5px 0;">
+                                © 2026 ExpressCart Business. Todos los derechos reservados.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        `,
+      attachments: [
+        {
+          filename: "logo.png",
+          path: logoPath,
+          cid: "expresscart-logo",
+        },
+      ],
+    });
+
+    console.log("Supermarket password reset email sent: %s", email.messageId);
+  };
+}

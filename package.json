@@ -1,0 +1,42 @@
+{
+  "name": "ExpressCart-node.js-Express",
+  "version": "1.0.0",
+  "description": "BackEnd for ExpressCart using Node.js and Express",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "dev:api": "nodemon src/index.ts --api",
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "Juan Rodriguez and Arianna Ventura",
+  "license": "ISC",
+  "packageManager": "pnpm@10.34.1",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "colors": "^1.4.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "nodemailer": "^8.0.11",
+    "pg": "^8.21.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize-typescript": "^2.1.6"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/express-rate-limit": "^6.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.9.3",
+    "@types/nodemailer": "^8.0.1",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
