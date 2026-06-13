@@ -10,7 +10,7 @@ export class AuthController {
 
     static createAccount = async (req: Request, res: Response) => {
 
-        const { email, name, password } = req.body
+        const { email, name, password, role } = req.body
 
         const existingUser = await User.findOne({ where: { email } })
         if (existingUser) {
@@ -22,6 +22,7 @@ export class AuthController {
             const user = new User()
             user.email = email
             user.name = name
+            user.role = role || 'client'
             user.password = await hashPassword(password)
             user.token = generateToken()
             await user.save()

@@ -19,9 +19,9 @@ export class Order extends Model {
 
     @AllowNull(false)
     @Column({
-        type: DataType.ENUM('activa', 'en proceso', 'completada', 'cancelada') // Restringe a los estados exactos que definiste
+        type: DataType.ENUM('activa', 'en proceso','en camino', 'completada', 'cancelada') // Restringe a los estados exactos que definiste
     })
-    declare status: 'activa' | 'en proceso' | 'completada' | 'cancelada';
+    declare status: 'activa' | 'en proceso'| 'en camino' | 'completada' | 'cancelada';
 
     @ForeignKey(() => User)
     @AllowNull(false)
@@ -30,6 +30,14 @@ export class Order extends Model {
 
     @BelongsTo(() => User)
     declare user: User;
+
+    @ForeignKey(() => User)
+    @AllowNull(true) // Al crearse la orden, aún no tiene repartidor asignado
+    @Column({ type: DataType.INTEGER })
+    declare deliveryId: number;
+
+    @BelongsTo(() => User, 'deliveryId')
+    declare deliveryMan: User;
 
     @ForeignKey(() => Supermarket)
     @AllowNull(false)
