@@ -11,7 +11,7 @@ import categoryRoutes from './routes/categoryRoutes';
 import orderRoutes from './routes/orderRoutes';
 import profileRoutes from './routes/profileRoutes';
 import deliveryRoutes from './routes/deliveryRoutes';
-
+import { decryptPayload } from './middleware/decryptPayload';
 
 async function connectDB() {
     try {
@@ -34,7 +34,7 @@ initSocket(httpServer);
 app.use(morgan('dev'))
 
 app.use(express.json())
-
+app.use(decryptPayload);
 
 app.use('/api/auth', authRouter)
 app.use('/api/supermarkets', SupermarketRoutes)
