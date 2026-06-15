@@ -16,7 +16,7 @@ import { decryptPayload } from './middleware/decryptPayload';
 async function connectDB() {
     try {
         await db.authenticate()
-        db.sync()
+        await db.sync()
         console.log(colors.green.bold('Conexión a la base de datos exitosa'))
     }
     catch (error) {
