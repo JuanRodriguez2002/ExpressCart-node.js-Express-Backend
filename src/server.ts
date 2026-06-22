@@ -27,6 +27,9 @@ async function connectDB() {
 connectDB()
 const app = express()
 
+
+app.set('trust proxy', 1);
+
 const httpServer = createServer(app);
 initSocket(httpServer);
 
