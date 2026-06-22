@@ -11,7 +11,7 @@ export class AuthEmail {
   static sendConfirmationEmail = async (data: EmailType) => {
     const logoPath = path.join(__dirname, "../assets/logo_conF.png");
     const email = await transport.sendMail({
-      from: '"ExpressCart" <no-reply@expresscart.com>',
+      from: '"ExpressCart" <rodriguezsalasjuandiego070@gmail.com>',
       to: data.email,
       subject: "ExpressCart - Confirma tu cuenta",
       text: `Hola ${data.name}, confirma tu cuenta en ExpressCart utilizando el siguiente código: ${data.token}`,
@@ -80,7 +80,7 @@ export class AuthEmail {
     const logoPath = path.join(__dirname, "../assets/logo_conF.png");
 
     const email = await transport.sendMail({
-      from: '"ExpressCart" <no-reply@expresscart.com>', // Unificado con el remitente de arriba
+      from: '"ExpressCart" <rodriguezsalasjuandiego070@gmail.com>', // Unificado con el remitente de arriba
       to: user.email,
       subject: "ExpressCart - Restablece tu contraseña",
       text: `Hola ${user.name}, has solicitado restablecer tu contraseña. Utiliza el siguiente código para continuar: ${user.token}`,
@@ -150,7 +150,7 @@ export class AuthEmail {
     const logoPath = path.join(__dirname, "../assets/logo_conF.png");
 
     const email = await transport.sendMail({
-      from: '"ExpressCart Business" <no-reply@expresscart.com>',
+      from: '"ExpressCart Business" <rodriguezsalasjuandiego070@gmail.com>',
       to: data.email,
       subject: "ExpressCart Business - Activa tu cuenta de Supermercado",
       text: `Estimado aliado de ${data.name}, active su cuenta comercial en ExpressCart utilizando el siguiente código: ${data.token}`,
@@ -222,7 +222,7 @@ export class AuthEmail {
     const logoPath = path.join(__dirname, "../assets/logo_conF.png");
 
     const email = await transport.sendMail({
-      from: '"ExpressCart Business" <no-reply@expresscart.com>',
+      from: '"ExpressCart Business" <rodriguezsalasjuandiego070@gmail.com>',
       to: user.email,
       subject:
         "ExpressCart Business - Reestablecimiento de credenciales de acceso",

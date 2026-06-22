@@ -18,7 +18,7 @@ router.post('/checkout',
     body('paymentMethodId').isInt().withMessage('El método de pago es requerido'),
     body('products').isArray({ min: 1 }).withMessage('Debes incluir al menos un producto en el pedido'),
     body('products.*.id').isInt().withMessage('ID de producto no válido'),
-    body('products.*.quantity').isInt({ min: 1 }).withMessage('La cantidad mínima por ítem es de 1'),
+    body('products.*.quantity').isFloat({ min: 0.01 }).withMessage('La cantidad debe ser un número mayor a 0 (admite decimales para libras)'),
     handleInputErrors,
     OrderController.createOrder
 );
