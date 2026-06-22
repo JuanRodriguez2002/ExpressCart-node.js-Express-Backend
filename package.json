@@ -16,6 +16,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "colors": "^1.4.0",
+    "crypto-js": "^4.2.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
@@ -25,16 +26,19 @@
     "nodemailer": "^8.0.11",
     "pg": "^8.21.0",
     "pg-hstore": "^2.3.4",
-    "sequelize-typescript": "^2.1.6"
+    "sequelize-typescript": "^2.1.6",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/express": "^5.0.6",
     "@types/express-rate-limit": "^6.0.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.9.3",
     "@types/nodemailer": "^8.0.1",
+    "@types/socket.io": "^3.0.2",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
