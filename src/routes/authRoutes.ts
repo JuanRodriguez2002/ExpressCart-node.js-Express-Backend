@@ -15,7 +15,7 @@ router.post('/create-account',
     body('email')
         .isEmail().withMessage('Email is not valid'),
     body('password')
-        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
+        .isLength({ min: 6 }).withMessage('Password must be at least 8 characters long'),
 
     handleInputErrors,
     AuthController.createAccount
