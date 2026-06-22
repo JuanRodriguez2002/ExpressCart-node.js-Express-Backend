@@ -17,6 +17,7 @@ export class OrderController {
 
   static createOrder = async (req: Request, res: Response) => {
     // Iniciamos una transacción gestionada
+    
     const t = await db.transaction();
 
     try {
@@ -25,7 +26,7 @@ export class OrderController {
         supermarketId,
         addressId,
         paymentMethodId,
-        products, // Array de objetos: [{ id: 1, quantity: 2 }, { id: 2, quantity: 1 }]
+        products, // Array de objetos: [{ id: 1, quantity: 2 }, { id: 2, quantity: 1.5 }]
       } = req.body;
 
       // 1. Validaciones básicas de existencia de datos de entrega y pago
@@ -81,41 +82,56 @@ export class OrderController {
             });
         }
 
-        // Verificar que pertenezca al supermercado seleccionado indirectamente mediante su categoría
-        // (Opcional, pero ideal para blindar consistencia si las categorías están asociadas al supermercado)
+        // Parseo seguro a tipos numéricos flotantes
+        const requestedQty = Number(item.quantity);
+        const currentStock = Number(dbProduct.stock);
+        const productPrice = Number(dbProduct.price);
 
-        // Validar Stock disponible
-        if (dbProduct.stock < item.quantity) {
+        // Candado de seguridad: Si se vende por unidad ("ud"), la cantidad DEBE ser entera
+        if (dbProduct.unitType === 'ud' && !Number.isInteger(requestedQty)) {
           await t.rollback();
           return res
             .status(400)
             .json({
-              error: `Stock insuficiente para: ${dbProduct.name}. Disponibles: ${dbProduct.stock}`,
+              error: `El producto: ${dbProduct.name} se vende por piezas completas, no admite fracciones decimales.`,
             });
         }
 
-        // Acumular total del pedido
-        const subtotal = Number(dbProduct.price) * item.quantity;
+        // Validar Stock disponible (ahora evaluando decimales)
+        if (currentStock < requestedQty) {
+          await t.rollback();
+          return res
+            .status(400)
+            .json({
+              error: `Stock insuficiente para: ${dbProduct.name}. Disponibles: ${currentStock} ${dbProduct.unitType}`,
+            });
+        }
+
+        // Acumular total del pedido de forma limpia
+        const subtotal = productPrice * requestedQty;
         calculatedTotal += subtotal;
 
         // Preparar datos para actualización de stock diferida
         productsToUpdate.push({
           productInstance: dbProduct,
-          newStock: dbProduct.stock - item.quantity,
+          newStock: Number((currentStock - requestedQty).toFixed(2)), // Protegemos los decimales del stock
         });
 
         // Preparar datos para la tabla intermedia
         orderProductsData.push({
           productId: dbProduct.id,
-          quantity: item.quantity,
-          priceAtPurchase: dbProduct.price,
+          quantity: requestedQty,
+          priceAtPurchase: productPrice,
         });
       }
+
+      // Redondeamos el total general para prevenir errores de coma flotante en la DB
+      const finalTotal = Number(calculatedTotal.toFixed(2));
 
       // 3. Crear la Orden Maestro con el estado inicial "activa"
       const order = await Order.create(
         {
-          total: calculatedTotal,
+          total: finalTotal,
           status: "activa",
           userId,
           supermarketId,
@@ -132,7 +148,7 @@ export class OrderController {
       }));
       await OrderProduct.bulkCreate(bulkOrderProducts, { transaction: t });
 
-      // 5. Descontar el stock real del inventario comercial
+      // 5. Descontar el stock real en formato decimal del inventario comercial
       for (const item of productsToUpdate) {
         await item.productInstance.update(
           { stock: item.newStock },
@@ -146,7 +162,7 @@ export class OrderController {
       return res.status(201).json({
         message: "¡Pedido generado con éxito!",
         orderId: order.id,
-        total: calculatedTotal,
+        total: finalTotal,
         status: order.status,
       });
     } catch (error) {

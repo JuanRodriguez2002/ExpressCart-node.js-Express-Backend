@@ -1,10 +1,11 @@
+// src/models/OrderProduct.ts
 import { Table, Model, Column, DataType, ForeignKey, AllowNull } from 'sequelize-typescript';
 import { Order } from './Order';
 import { Product } from './Product';
 
 @Table({
     tableName: 'order_products',
-    timestamps: false, // No suele requerir createdAt/updatedAt independientes
+    timestamps: false,
 })
 export class OrderProduct extends Model {
 
@@ -24,13 +25,13 @@ export class OrderProduct extends Model {
 
     @AllowNull(false)
     @Column({
-        type: DataType.INTEGER // Cuántas unidades de ese producto lleva el carrito
+        type: DataType.DECIMAL(10, 2) // CAMBIO: Soportar cantidades decimales (ej. 0.50, 1.25, 2.00)
     })
     declare quantity: number;
 
     @AllowNull(false)
     @Column({
-        type: DataType.DECIMAL(10, 2) // Precio unitario guardado en el momento de la compra
+        type: DataType.DECIMAL(10, 2) // Precio guardado en el momento de la compra
     })
     declare priceAtPurchase: number;
 }
