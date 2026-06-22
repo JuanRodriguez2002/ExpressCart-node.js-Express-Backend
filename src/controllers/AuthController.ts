@@ -27,11 +27,16 @@ export class AuthController {
             user.token = generateToken()
             await user.save()
 
-            await AuthEmail.sendConfirmationEmail({
-                name: user.name,
-                email: user.email,
-                token: user.token
-            })
+           try {
+                await AuthEmail.sendConfirmationEmail({
+                    name: user.name,
+                    email: user.email,
+                    token: user.token
+                })
+            } catch (emailError) {
+                // Si el SMTP falla, se registra en los logs de Railway pero NO congela la app
+                console.error('⚠️ Error al enviar email de confirmación:', emailError)
+            }
 
 
             res.status(201).json('Account created successfully' )
