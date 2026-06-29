@@ -1,4 +1,4 @@
-import { Table, Model, Column, ForeignKey, DataType } from 'sequelize-typescript';
+import { Table, Model, Column, ForeignKey, DataType, BelongsTo } from 'sequelize-typescript';
 import User from './User';
 import Supermarket from './Supermarket';
 
@@ -21,6 +21,9 @@ export class UserFavoriteSupermarket extends Model {
         allowNull: false
     })
     declare supermarketId: number;
+
+    @BelongsTo(() => Supermarket)
+    declare supermarket: Supermarket;
 }
 
 export default UserFavoriteSupermarket;
