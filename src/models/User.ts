@@ -62,6 +62,8 @@ declare contacts: UserContact[];
     as: "favoriteSupermarkets",
   })
   declare favoriteSupermarkets: Supermarket[];
+
+  
 }
 
 export default User;

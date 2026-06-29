@@ -11,6 +11,7 @@ import categoryRoutes from './routes/categoryRoutes';
 import orderRoutes from './routes/orderRoutes';
 import profileRoutes from './routes/profileRoutes';
 import deliveryRoutes from './routes/deliveryRoutes';
+import favoriteRoutes from './routes/favoriteRoutes';
 import { decryptPayload } from './middleware/decryptPayload';
 
 async function connectDB() {
@@ -46,6 +47,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/delivery', deliveryRoutes);
+app.use('/api/favorites', favoriteRoutes)
 
 
 const PORT = process.env.PORT || 4000;
